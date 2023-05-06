@@ -7,10 +7,14 @@ import videoRoutes from "./routes/videos.js"
 import authRoutes from "./routes/auth.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
 
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const dirname = path.resolve();
 app.use(express.json());
 app.use(cookieParser());
