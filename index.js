@@ -7,10 +7,11 @@ import videoRoutes from "./routes/videos.js"
 import authRoutes from "./routes/auth.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
-const path = require("path");
+import path from "path";
 
 
 const app = express();
+const dirname = path.resolve();
 app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
