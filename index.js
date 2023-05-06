@@ -7,6 +7,7 @@ import videoRoutes from "./routes/videos.js"
 import authRoutes from "./routes/auth.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 
 const app = express();
@@ -37,6 +38,12 @@ app.use("/api/users", userRoutes);
 app.use("/api/videos", videoRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/auth", authRoutes);
+
+app.use(express.static(path.join(__dirname, "./client/build")));
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "./client/build/index.html"));
+});
 
 app.use((err, req, res, next) => {
     const status = err.status || 500;
