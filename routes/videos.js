@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken } from "../verifyToken.js";
-import { addVideo, updateVideo, deleteVideo, getVideo, addView, trend, random, sub, getByTag, searchVideo } from "../controllers/video.js";
+import { addVideo, updateVideo, deleteVideo, getVideo, addView, trend, random, sub, getByTag, searchVideo, getWatchHistory, getCurrVideos } from "../controllers/video.js";
 
 const router = express.Router();
 
@@ -22,6 +22,9 @@ router.put("/view/:id", addView);
 // trending videos
 router.get("/trend", trend);
 
+// get current user videos
+router.get("/curr", verifyToken, getCurrVideos)
+
 // random videos
 router.get("/random", random);
 
@@ -33,5 +36,8 @@ router.get("/tags", getByTag);
 
 // search by title
 router.get("/search", searchVideo);
+
+//get watch history
+router.get("/history", verifyToken, getWatchHistory);
 
 export default router;

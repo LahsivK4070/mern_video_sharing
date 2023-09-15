@@ -13,7 +13,7 @@ export const addComment = async (req, res, next) => {
 
 export const deleteComment = async (req, res, next) => {
     try {
-        const comment = await Comment.findById(res.params.id);
+        const comment = await Comment.findById(req.params.id);
         const video = await Video.findById(comment.videoid);
 
         if (req.user.id === comment.userId || req.user.id === video.userId) {
@@ -23,7 +23,7 @@ export const deleteComment = async (req, res, next) => {
             return next(createError(403, "You can delete only your account"));
         }
     } catch (error) {
-        next(err);
+        next(error);
     }
 }
 

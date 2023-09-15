@@ -6,7 +6,6 @@ import { body, validationResult } from "express-validator";
 
 dotenv.config();
 
-
 export const signup = ([
     body('name', "Please enter your name").isLength({min: 2}),
     body('email', "Please enter your email").isEmail(),
@@ -27,8 +26,15 @@ export const signup = ([
         const hash = bcrypt.hashSync(req.body.password, salt);
         const newUser = new User({ ...req.body, password: hash });
 
-        await newUser.save();
-        res.status(200).send("User has been created");
+        user = await newUser.save();
+        const token = jwt.sign({ id: user._id }, process.env.JWT);
+        const { password, ...others } = user._doc; 
+
+        res.cookie("access_token", token, {
+            httpOnly: true,
+            maxAge: 31536000,
+        }).status(200).json(others);
+
     } catch (err) {
         res.status(500).send("Internal server error");
     }
@@ -60,12 +66,21 @@ export const signin = ([
         const { password, ...others } = user._doc; 
 
         res.cookie("access_token", token, {
-            httpOnly: true
+            httpOnly: true,
+            maxAge: 31536000,
         }).status(200).json(others);
     } catch (err) {
         res.status(500).send("Internal server error");
     }
 });
+
+export const signout = async (req, res, next) => {
+    try {       
+        res.clearCookie("access_token").status(200).json("Logged out successfully!");
+    } catch (err) {
+        next(err);
+    }
+}
  
 export const googleAuth = async (req, res, next) => {
     try {

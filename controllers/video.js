@@ -67,6 +67,15 @@ export const getVideo = async (req, res, next) => {
     }
 };
 
+export const getCurrVideos = async (req, res, next) => {
+    try {
+            const list = await Video.find({ userId: req.user.id });
+            res.status(200).json(list.flat().sort((a, b) => b.createdAt - a.createdAt));
+      } catch (err) {
+        next(err);
+      }
+}
+
 export const addView = async (req, res, next) => {
     try {
         await Video.findByIdAndUpdate(req.params.id, {
@@ -137,3 +146,21 @@ export const searchVideo = async (req, res, next) => {
     }
 }
 
+export const getWatchHistory = async (req, res, next) => {
+    const id = req.user.id;
+
+    try {
+        const user = await User.findById(id);
+        const historyVideos = user.history;
+    
+        const list = await Promise.all(
+          historyVideos.map(async (videoId) => {
+            return Video.find({ _id: videoId });
+          })
+        );
+    
+        res.status(200).json(list.flat());
+      } catch (err) {
+        next(err);
+      }
+}

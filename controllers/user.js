@@ -102,3 +102,18 @@ export const dislike = async (req, res, next) => {
         next(err);
     }
 };
+
+export const addHistory = async (req, res, next) => {
+    const id = req.user.id;
+    const videoId = req.params.videoId;
+
+    try {
+        await User.findByIdAndUpdate(id, {
+            $addToSet: { history: videoId }
+        })
+
+        res.status(200).json("video added in history successfully!");
+    } catch (err) {
+        next(err);
+    }
+}
